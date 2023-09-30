@@ -29,6 +29,8 @@ readyCost = [
     [7,6,1,1,4,10,4,5,9,8,0,0,0,0,0]
 ]
 
+bestCosts = []
+
 def getCar(conv1,conv2,conv3):
     upConv = [conv1,conv2,conv3]
     cars = []
@@ -49,7 +51,7 @@ def getPopulation():
     return populations
 def calCost(cars):
     cost = 0
-    for i in range(len(cars)):
+    for i in range(len(cars)-1):
         x,y = cars[i],cars[i+1]
         cost += readyCost[x-1][y-1]
     return cost
@@ -68,7 +70,48 @@ def crossover(parent1,parent2):
 
     return offspring1, offspring2
 
+def getNewPopulations(oldPopulations):  # pop + off 받아서 상위 50개 도출
+    newPopulations = []
+    for p in oldPopulations:
+        cost = calCost(p)
+        newPopulations.append([p,cost])
+    newPopulations = sorted(newPopulations, key = lambda x: x[1])   # cost 오름차순으로 정렬
+    newPopulations = [a for a,b in newPopulations[:50]]             # cost 낮은 순 50개까지 가져온 후 Gene,cost에서 Gene만 가져옴
+    return newPopulations
+
+def getOffsprings(parents):
+    offsprings = []
+    for i in range(0,50,2):
+        off1,off2 = crossover(parents[i],parents[i+1])
+        offsprings.extend([off1,off2])
+    return offsprings
+
 
 populations = getPopulation()
+offsprings = []
 print(populations)
-while NotImproved < 50:
+while NotImproved < 3:
+    offsprings = getOffsprings(populations)
+    populations.extend(offsprings)
+    populations = getNewPopulations(populations)
+
+
+    print(bestCosts,populations[0])
+    if not bestCosts:
+        print("empty")
+        bestCosts.append(populations[0])
+    else:
+        if bestCosts[0] == populations[0]:
+            NotImproved +=1
+        else:
+            oldCost = calCost(bestCosts[0])
+            newCost = calCost(populations[0])
+            if oldCost >= newCost:
+                bestCosts[0] = populations[0]
+                NotImproved = 0
+            else:
+                NotImproved += 1
+    print(NotImproved)
+    print(bestCosts,calCost(bestCosts[0]))
+    print("press anything to continue")
+    nothing = input()
