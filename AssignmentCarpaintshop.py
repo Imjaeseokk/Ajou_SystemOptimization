@@ -74,6 +74,22 @@ def crossover(parent1,parent2):
     return offspring1, offspring2
 
 
+def mutation(offspring1, offspring2):           # off 2개 받고, 임시 off에 복사해둔 뒤, mutation(Swap) 연산
+    isfeasible = False                          # 해당 임시 off가 valid ok면, 기존 off1, off2에 넣고, 반환
+    while not isfeasible:
+        tempOffs = []
+        for o in [offspring1, offspring2]:
+            point1 = random.randint(0, 14)  # 1번째 원소부터 15번째 원소 중 하나 선택
+            point2 = random.randint(0, 14)
+            tempo = o[:]
+            tempo[point1], tempo[point2] = tempo[point2], tempo[point1]
+            tempOffs.append(tempo)
+
+        isfeasible = validation(tempOffs)
+    offspring1, offspring2 = tempOffs
+
+    return offspring1, offspring2
+
 def validation(offs):  # crossover 후 2개씩 검증, mutation 후 2개씩 검증
     isfeasible = True
     for o in offs:
@@ -108,7 +124,8 @@ def getNewPopulations(oldPopulations):  # pop + off 받아서 상위 50개 도�
 def getOffsprings(parents):     # 부모 유전자 50개 받아서 자식 유전자 50개 생성, crossover 함수에 부모 유전자 2개씩 전달
     offsprings = []
     for i in range(0,50,2):
-        off1,off2 = crossover(parents[i],parents[i+1])
+        off1,off2 = crossover(parents[i],parents[i+1])      # mutation 추가해야함
+        off1,off2 = mutation(off1,off2)
         offsprings.extend([off1,off2])
     return offsprings
 
