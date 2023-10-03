@@ -139,31 +139,41 @@ populations = getPopulation()
 for p in populations:
     print(*p)
 
-while NotImproved < 500000:
 
-    offsprings = getOffsprings(populations)
+solutions = []
+def findSolution(NotImproved,populations):
+    while NotImproved < 100000:
+        offsprings = getOffsprings(populations)
 
-    populations.extend(offsprings)
+        populations.extend(offsprings)
 
-    populations = getNewPopulations(populations)
+        populations = getNewPopulations(populations)
 
 
-    print(bestCosts,populations[0])
-    if not bestCosts:
-        # print("empty")
-        bestCosts.append(populations[0])
-    else:
-        if bestCosts[0] == populations[0]:
-            NotImproved +=1
+        #print(bestCosts,populations[0])
+        if not bestCosts:
+            # print("empty")
+            bestCosts.append(populations[0])
         else:
-            oldCost = calCost(bestCosts[0])
-            newCost = calCost(populations[0])
-            if oldCost >= newCost:
-                bestCosts[0] = populations[0]
-                NotImproved = 0
+            if bestCosts[0] == populations[0]:
+                NotImproved +=1
             else:
-                NotImproved += 1
-    print(NotImproved)
-    print(bestCosts,calCost(bestCosts[0]))
-    # print("press anything to continue")
-    # nothing = input()
+                oldCost = calCost(bestCosts[0])
+                newCost = calCost(populations[0])
+                if oldCost >= newCost:
+                    bestCosts[0] = populations[0]
+                    NotImproved = 0
+                else:
+                    NotImproved += 1
+        #print(NotImproved)
+        #print(bestCosts,calCost(bestCosts[0]))
+        # print("press anything to continue")
+        # nothing = input()
+    print(calCost(bestCosts[0]))
+    return calCost(bestCosts[0])
+
+for k in range(1000):
+    populations = getPopulation()
+    solutions.append(findSolution(0,populations))
+
+print(sorted(solutions))
