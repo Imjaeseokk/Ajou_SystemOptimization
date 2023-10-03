@@ -57,18 +57,44 @@ def calCost(cars):
     return cost
 
 def crossover(parent1,parent2):
-    point = random.randint(1,15)
-    reorderGene1 = parent1[point - 1:]
-    reorderGene2 = parent2[point - 1:]
-    offspring1 = parent1[:point-1]
-    offspring2 = parent2[:point-1]
-    for i in range(len(parent1)):
-        if parent2[i] in reorderGene1:
-            offspring1.append(parent2[i])
-        if parent1[i] in reorderGene2:
-            offspring2.append(parent1[i])
+    isfeasible = True
+    while isfeasible:
+        point = random.randint(1,15)
+        reorderGene1 = parent1[point - 1:]
+        reorderGene2 = parent2[point - 1:]
+        offspring1 = parent1[:point-1]
+        offspring2 = parent2[:point-1]
+        for i in range(len(parent1)):
+            if parent2[i] in reorderGene1:
+                offspring1.append(parent2[i])
+            if parent1[i] in reorderGene2:
+                offspring2.append(parent1[i])
 
+        isfeasible = validation([offspring1,offspring2])      # validation func에서 feasible 여부 return
     return offspring1, offspring2
+
+
+def validation(offs):  # crossover 후 2개씩 검증, mutation 후 2개씩 검증
+    isfeasible = True
+    for o in offs:
+        conv1 = conveyer1[:]
+        conv2 = conveyer2[:]
+        conv3 = conveyer3[:]
+        for c in o:
+            if conv1 and conv1[-1] == c:
+                conv1.pop()
+            elif conv2 and conv2[-1] == c:
+                conv2.pop()
+            elif conv3 and conv3[-1] == c:
+                conv3.pop()
+            else:
+                print("infeasible")
+                isfeasible = False
+                break
+
+    return isfeasible
+
+
 
 def getNewPopulations(oldPopulations):  # pop + off 받아서 상위 50개 도출
     newPopulations = []
@@ -87,12 +113,14 @@ def getOffsprings(parents):     # 부모 유전자 50개 받아서 자식 유전
     return offsprings
 
 
-def validation(off1,off2):              # crossover 후 2개씩 검증, mutation 후 2개씩 검증
-    pass
-
 populations = getPopulation()
 offsprings = []
-print(populations)
+
+
+# print populations
+for p in populations:
+    print(*p)
+
 while NotImproved < 3:
     offsprings = getOffsprings(populations)
     populations.extend(offsprings)
