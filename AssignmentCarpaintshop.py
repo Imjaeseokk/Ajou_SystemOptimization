@@ -74,17 +74,16 @@ def crossover(parent1,parent2):
 
 
 def mutation(offspring1, offspring2):           # off 2개 받고, 임시 off에 복사해둔 뒤, mutation(Swap) 연산
-    print("mutation")
+    # print("mutation")
     isfeasible = False                          # 해당 임시 off가 valid ok면, 기존 off1, off2에 넣고, 반환
-    # mutationPoint1 = random.randint(0,14)
-    # mutationPoint2 = random.randint(0,14)
+    Off1mutationPt = random.randint(0,14)
+    Off2mutationPt = random.randint(0,14)
     while not isfeasible:
         tempOffs = []
         for o in [offspring1, offspring2]:
-            point1 = random.randint(0, 14)  # 1번째 원소부터 15번째 원소 중 하나 선택
-            point2 = random.randint(0, 14)
+            mutationPt = random.randint(0, 14)  # 1번째 원소부터 15번째 원소 중 하나 선택
             tempo = o[:]
-            tempo[point1], tempo[point2] = tempo[point2], tempo[point1]
+            tempo[Off1mutationPt], tempo[mutationPt] = tempo[mutationPt], tempo[Off1mutationPt]
             tempOffs.append(tempo)
 
         isfeasible = validation(tempOffs)
@@ -107,7 +106,7 @@ def validation(offs):  # crossover 후 2개씩 검증, mutation 후 2개씩 검�
             elif conv3 and conv3[-1] == c:
                 conv3.pop()
             else:
-                print("infeasible")
+                #print("infeasible")
                 isfeasible = False
                 break
 
@@ -134,8 +133,7 @@ def getOffsprings(parents):     # 부모 유전자 50개 받아서 자식 유전
             off1, off2 = parents[i],parents[i+1]
         randomofMutation = random.random()
         if randomofMutation < rm:
-            #off1,off2 = mutation(off1,off2)
-        
+            off1,off2 = mutation(off1,off2)
         offsprings.extend([off1,off2])
     return offsprings
 
@@ -155,7 +153,7 @@ while NotImproved < 500000:
     populations = getNewPopulations(populations)
 
 
-    print(bestCosts,populations[0])
+    #print(bestCosts,populations[0])
     if not bestCosts:
         # print("empty")
         bestCosts.append(populations[0])
