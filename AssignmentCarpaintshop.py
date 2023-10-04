@@ -127,8 +127,15 @@ def getNewPopulations(oldPopulations):  # pop + off 받아서 상위 50개 도�
 def getOffsprings(parents):     # 부모 유전자 50개 받아서 자식 유전자 50개 생성, crossover 함수에 부모 유전자 2개씩 전달
     offsprings = []
     for i in range(0,50,2):
-        off1,off2 = crossover(parents[i],parents[i+1])      # mutation 추가해야함
-        #off1,off2 = mutation(off1,off2)
+        randomofCrossover = random.random()
+        if randomofCrossover < rc:
+            off1,off2 = crossover(parents[i],parents[i+1])      # mutation 추가해야함
+        else:
+            off1, off2 = parents[i],parents[i+1]
+        randomofMutation = random.random()
+        if randomofMutation < rm:
+            #off1,off2 = mutation(off1,off2)
+        
         offsprings.extend([off1,off2])
     return offsprings
 
