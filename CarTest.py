@@ -1,4 +1,3 @@
-import pandas
 import random
 
 n = 50
@@ -143,16 +142,13 @@ def getOffsprings(parents):     # 부모 유전자 50개 받아서 자식 유전
     return offsprings
 
 
-populations = getPopulation()
-
-
 # print populations
-for p in populations:
-    print(*p)
+# for p in populations:
+#     print(*p)
 
 
 solutions = []
-def findSolution(NotImproved,populations):
+def findSolution(NotImproved,populations,zc):
     while NotImproved < 10:
         offsprings = getOffsprings(populations)
 
@@ -179,14 +175,13 @@ def findSolution(NotImproved,populations):
 
         # print("press anything to continue")
         # nothing = input()
-    print(calCost(zc))
+    print(calCost(zc),"gene:", *zc)
     return calCost(zc)
 
-for k in range(1000):
-    zc = [populations[0]]
+for k in range(1000):       # 1000 10000 100000번 시행하고 결과 확인하기
     populations = getPopulation()
-    solutions.append(findSolution(0,populations))
+    zc = populations[0]
+    solutions.append(findSolution(0,populations,zc))
 
 print(sorted(solutions))
 
-pandas.tocsv(solutions)
