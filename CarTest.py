@@ -1,3 +1,4 @@
+import pandas
 import random
 
 n = 50
@@ -29,7 +30,7 @@ readyCost = [
     [7,6,1,1,4,10,4,5,9,8,0,0,0,0,0]
 ]
 
-bestCosts = []
+
 
 def getCar(conv1,conv2,conv3):
     upConv = [conv1,conv2,conv3]
@@ -47,7 +48,11 @@ def getCar(conv1,conv2,conv3):
 def getPopulation():
     populations = []
     for i in range(n):
-        populations.append(getCar(conveyer1[:], conveyer2[:], conveyer3[:]))
+        gene = (getCar(conveyer1[:], conveyer2[:], conveyer3[:]))
+        populations.append([gene,calCost(gene)])
+        #populations.append(getCar(conveyer1[:], conveyer2[:], conveyer3[:]))
+    populations = sorted(populations, key=lambda x: x[1])
+    populations = [g for g,c in populations]
     return populations
 def calCost(cars):
     cost = 0
@@ -140,6 +145,7 @@ def getOffsprings(parents):     # 부모 유전자 50개 받아서 자식 유전
 
 populations = getPopulation()
 
+
 # print populations
 for p in populations:
     print(*p)
@@ -147,7 +153,7 @@ for p in populations:
 
 solutions = []
 def findSolution(NotImproved,populations):
-    while NotImproved < 10000:
+    while NotImproved < 10:
         offsprings = getOffsprings(populations)
 
         populations.extend(offsprings)
@@ -155,30 +161,32 @@ def findSolution(NotImproved,populations):
         populations = getNewPopulations(populations)
 
 
-        #print(bestCosts,populations[0])
-        if not bestCosts:
-            # print("empty")
-            bestCosts.append(populations[0])
+        zn = populations[0]
+        # if not bestCosts:
+        #     print("empty")
+        #     bestCosts.append(populations[0])
+
+        if zc == zn:
+            NotImproved +=1
         else:
-            if bestCosts[0] == populations[0]:
-                NotImproved +=1
+            oldCost = calCost(zc)
+            newCost = calCost(zn)
+            if oldCost >= newCost:
+                zc = zn
+                NotImproved = 0
             else:
-                oldCost = calCost(bestCosts[0])
-                newCost = calCost(populations[0])
-                if oldCost >= newCost:
-                    bestCosts[0] = populations[0]
-                    NotImproved = 0
-                else:
-                    NotImproved += 1
-        #print(NotImproved)
-        #print(bestCosts,calCost(bestCosts[0]))
+                NotImproved += 1
+
         # print("press anything to continue")
         # nothing = input()
-    print(calCost(bestCosts[0]))
-    return calCost(bestCosts[0])
+    print(calCost(zc))
+    return calCost(zc)
 
 for k in range(1000):
+    zc = [populations[0]]
     populations = getPopulation()
     solutions.append(findSolution(0,populations))
 
 print(sorted(solutions))
+
+pandas.tocsv(solutions)
