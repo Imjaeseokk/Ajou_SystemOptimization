@@ -29,7 +29,7 @@ readyCost = [
     [7,6,1,1,4,10,4,5,9,8,0,0,0,0,0]
 ]
 
-bestCosts = []
+
 
 def getCar(conv1,conv2,conv3):
     upConv = [conv1,conv2,conv3]
@@ -146,8 +146,10 @@ for p in populations:
 
 
 solutions = []
+bestCosts = []
 def findSolution(NotImproved,populations):
-    while NotImproved < 10000:
+    bestCosts = []
+    while NotImproved < 5000:
         offsprings = getOffsprings(populations)
 
         populations.extend(offsprings)
