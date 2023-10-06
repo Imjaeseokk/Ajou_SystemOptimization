@@ -148,8 +148,15 @@ def getOffsprings(parents):     # 부모 유전자 50개 받아서 자식 유전
 
 
 solutions = []
+<<<<<<< HEAD
 def findSolution(NotImproved,populations,zc):
     while NotImproved < 10:
+=======
+bestCosts = []
+def findSolution(NotImproved,populations):
+    bestCosts = []
+    while NotImproved < 5000:
+>>>>>>> f66381dcc23b88df84dc40df127c5667338e2a09
         offsprings = getOffsprings(populations)
 
         populations.extend(offsprings)
