@@ -72,18 +72,18 @@ def crossover(parent1,parent2):
                 offspring1.append(parent2[i])
             if parent1[i] in reorderGene2:
                 offspring2.append(parent1[i])
-        isfeasible = validation([offspring1,offspring2])      # validation func에서 feasible 여부 return
+        isfeasible = validation([offspring1,offspring2])
     return offspring1, offspring2
 
 
-def mutation(offspring1, offspring2):                                                           # off 2개 받고, 임시 off에 복사해둔 뒤, mutation(Swap) 연산
-    isfeasible = False                                                                          # 해당 임시 off가 valid ok면, 기존 off1, off2에 넣고, 반환
+def mutation(offspring1, offspring2):
+    isfeasible = False
     Off1mutationPt = random.randint(0,14)
     Off2mutationPt = random.randint(0,14)
     while not isfeasible:
         tempOffs = []
         for o in [offspring1, offspring2]:
-            mutationPt = random.randint(0, 14)                                                      # 1번째 원소부터 15번째 원소 중 하나 선택
+            mutationPt = random.randint(0, 14)
             tempo = o[:]
             tempo[Off1mutationPt], tempo[mutationPt] = tempo[mutationPt], tempo[Off1mutationPt]
             tempOffs.append(tempo)
@@ -93,7 +93,7 @@ def mutation(offspring1, offspring2):                                           
 
     return offspring1, offspring2
 
-def validation(offs):                                   # crossover 후 2개씩 검증, mutation 후 2개씩 검증
+def validation(offs):
     isfeasible = True
     for o in offs:
         conv1 = conveyer1[:]
@@ -112,21 +112,21 @@ def validation(offs):                                   # crossover 후 2개씩 
     return isfeasible
 
 
-def getNewPopulations(oldPopulations):                              # pop + off 받아서 상위 50개 도출
+def getNewPopulations(oldPopulations):
     newPopulations = []
     for p in oldPopulations:
         cost = calCost(p)
         newPopulations.append([p,cost])
-    newPopulations = sorted(newPopulations, key = lambda x: x[1])   # cost 오름차순으로 정렬
-    newPopulations = [g for g,c in newPopulations[:n]]             # cost 낮은 순 50개까지 가져온 후 Gene,cost에서 Gene만 가져옴
+    newPopulations = sorted(newPopulations, key = lambda x: x[1])
+    newPopulations = [g for g,c in newPopulations[:n]]
     return newPopulations
 
-def getOffsprings(parents):                                     # 부모 유전자 50개 받아서 자식 유전자 50개 생성, crossover 함수에 부모 유전자 2개씩 전달
+def getOffsprings(parents):
     offsprings = []
     for i in range(0,n,2):
         randomofCrossover = random.random()
         if randomofCrossover < rc:
-            off1,off2 = crossover(parents[i],parents[i+1])      # mutation 추가해야함
+            off1,off2 = crossover(parents[i],parents[i+1])
         else:
             off1, off2 = parents[i],parents[i+1]
         randomofMutation = random.random()
@@ -156,5 +156,8 @@ while NotImproved < 10:
         else:
             NotImproved += 1
 
-    print(NotImproved,zc,calCost(zc))
+    print(f"NotImproved:{NotImproved} 지금까지의 최적해는 {zc}, 최적해의 준비 비용은 {calCost(zc)}입니다.")
+
+print(f"최종해는 {zc}, 준비 비용은 {calCost(zc)}입니다.")
+
 
