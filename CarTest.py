@@ -1,4 +1,7 @@
 import random
+import time
+
+start = time.time()
 
 n = 50
 rc =0.95
@@ -148,15 +151,13 @@ def getOffsprings(parents):     # 부모 유전자 50개 받아서 자식 유전
 
 
 solutions = []
-<<<<<<< HEAD
-def findSolution(NotImproved,populations,zc):
-    while NotImproved < 10:
-=======
+
+
 bestCosts = []
-def findSolution(NotImproved,populations):
+def findSolution(NotImproved,populations,zc):
     bestCosts = []
-    while NotImproved < 5000:
->>>>>>> f66381dcc23b88df84dc40df127c5667338e2a09
+    while NotImproved < 10:
+
         offsprings = getOffsprings(populations)
 
         populations.extend(offsprings)
@@ -192,3 +193,5 @@ for k in range(1000):       # 1000 10000 100000번 시행하고 결과 확인하
 
 print(sorted(solutions))
 
+end = time.time()
+print(f"{end - start:.5f} sec")
