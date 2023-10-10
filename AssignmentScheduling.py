@@ -10,6 +10,7 @@ itrn = 0
 temp = 0
 tempUpdated = 0
 bestZ = int(1e9)
+
 def getFirstSolution(times):
     jobs = []
     for i in range(len(times)):
@@ -43,25 +44,30 @@ def accept(oldZ,newZ,temp):
         return True
     else:
         return False
-def setTemp(updated,temp,currentZ):
-    if updated == 0:
-        baseTemp = currentZ
-    else:
-        baseTemp = temp
-    tempSchedule = [0.2, 0.5, 0.5, 0.5, 0.5]
-    temp = baseTemp * tempSchedule[updated]
-    return temp
+def getTemperature(currentZ):
+    schedules = [0.2, 0.5, 0.5, 0.5, 0.5]
+    temperatures = [currentZ * schedules[0]]
+
+    for i in range(1, len(schedules)):
+        temperatures.append(temperatures[i - 1] * schedules[i])
+
+    # if updated == 0:
+    #     baseTemperature = currentZ
+    # else:
+    #     baseTemperature = temp
+    # tempSchedule = [0.2, 0.5, 0.5, 0.5, 0.5]
+    # temp = baseTemperature * tempSchedule[updated]
+    return temperatures
 
 currentSol = getFirstSolution(TIMETABLE[:])
+tempSchedule = getTemperature(calTotalCompleteTime(currentSol))
 
 while True:
+    temp = tempSchedule[tempUpdated]
+
     newSol = getNewSol(currentSol)
     currentZ = calTotalCompleteTime(currentSol)
     newZ = calTotalCompleteTime(newSol)
-
-    if repetition%20 == 0:
-        temp = setTemp(tempUpdated,temp,currentZ)
-        tempUpdated += 1
 
     if currentZ > newZ:
         currentSol = newSol
@@ -76,7 +82,10 @@ while True:
         bestSol = currentSol
 
     repetition += 1
+    tempUpdated = itrn // 5
     itrn += 1
+
+
     if tempUpdated >= 5:
         break
 
