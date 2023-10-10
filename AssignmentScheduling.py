@@ -45,9 +45,12 @@ def accept(oldZ,newZ,temp):
         return False
 def setTemp(updated,temp,currentZ):
     if updated == 0:
-        return currentZ * 0.2
+        baseTemp = currentZ
     else:
-        return temp * 0.5
+        baseTemp = temp
+    tempSchedule = [0.2, 0.5, 0.5, 0.5, 0.5]
+    temp = baseTemp * tempSchedule[updated]
+    return temp
 
 currentSol = getFirstSolution(TIMETABLE[:])
 
@@ -74,7 +77,7 @@ while True:
 
     repetition += 1
     itrn += 1
-    if tempUpdated >= 200:
+    if tempUpdated >= 5:
         break
 
 print(bestSol,bestZ)
