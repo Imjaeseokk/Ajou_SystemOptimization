@@ -1,9 +1,6 @@
 import random
 import numpy as np
 
-# temp scheduling
-# get complete time
-
 TIMETABLE = [13,15,10,21,34,9,25,23,11,8,12,17,30,14,45,27,31,20,6,5]
 repetition = 0
 itrn = 0
