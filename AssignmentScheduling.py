@@ -31,10 +31,14 @@ def calTotalCompleteTime(schedule):
     return sum(completeTime)
 
 def getNewSol(oldSol):
-    point1 = random.randint(0,len(oldSol)-1)
-    point2 = random.randint(0,len(oldSol)-1)
-    newSol = oldSol[:]
-    newSol[point1], newSol[point2] = newSol[point2],newSol[point1]
+    random1 = random.randint(0,len(oldSol)-1)
+    random2 = random.randint(0,len(oldSol)-1)
+    point1 = min(random1,random2)
+    point2 = max(random1,random2)
+    subtour = oldSol[point1:point2+1]
+    subtour.reverse()
+    newSol = oldSol[:point1] + subtour + oldSol[point2+1:]
+
     return newSol
 def accept(oldZ,newZ,temp):
     e = np.exp(1)
@@ -51,22 +55,17 @@ def getTemperature(currentZ):
     for i in range(1, len(schedules)):
         temperatures.append(temperatures[i - 1] * schedules[i])
 
-    # if updated == 0:
-    #     baseTemperature = currentZ
-    # else:
-    #     baseTemperature = temp
-    # tempSchedule = [0.2, 0.5, 0.5, 0.5, 0.5]
-    # temp = baseTemperature * tempSchedule[updated]
     return temperatures
 
 currentSol = getFirstSolution(TIMETABLE[:])
-tempSchedule = getTemperature(calTotalCompleteTime(currentSol))
+currentZ = calTotalCompleteTime(currentSol)
+tempSchedule = getTemperature(currentZ)
 
 while True:
     temp = tempSchedule[tempUpdated]
 
-    newSol = getNewSol(currentSol)
     currentZ = calTotalCompleteTime(currentSol)
+    newSol = getNewSol(currentSol)
     newZ = calTotalCompleteTime(newSol)
 
     if currentZ > newZ:
@@ -82,7 +81,7 @@ while True:
         bestSol = currentSol
 
     repetition += 1
-    tempUpdated = itrn // 5
+    tempUpdated = itrn // 50000
     itrn += 1
 
 
@@ -91,3 +90,4 @@ while True:
 
 print(bestSol,bestZ)
 
+# 2796
