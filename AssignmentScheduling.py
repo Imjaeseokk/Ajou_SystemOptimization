@@ -1,13 +1,6 @@
 import random
 import numpy as np
 
-TIMETABLE = [13,15,10,21,34,9,25,23,11,8,12,17,30,14,45,27,31,20,6,5]
-repetition = 0
-itrn = 0
-temp = 0
-tempUpdated = 0
-bestZ = int(1e9)
-
 def getFirstSolution(times):
     jobs = []
     for i in range(len(times)):
@@ -54,14 +47,20 @@ def getTemperature(currentZ):
 
     return temperatures
 
+TIMETABLE = [13,15,10,21,34,9,25,23,11,8,12,17,30,14,45,27,31,20,6,5]
+repetition = 0
+itrn = 1
+tempUpdated = 0
+
 currentSol = getFirstSolution(TIMETABLE[:])
 currentZ = calTotalCompleteTime(currentSol)
+bestZ = currentZ
 tempSchedule = getTemperature(currentZ)
 
-while True:
+while tempUpdated < 5:
+    print(tempUpdated, itrn)
     temp = tempSchedule[tempUpdated]
 
-    currentZ = calTotalCompleteTime(currentSol)
     newSol = getNewSol(currentSol)
     newZ = calTotalCompleteTime(newSol)
 
@@ -78,13 +77,8 @@ while True:
         bestSol = currentSol
 
     repetition += 1
-    tempUpdated = itrn // 50000
+    tempUpdated = itrn // 5
     itrn += 1
 
 
-    if tempUpdated >= 5:
-        break
-
 print(bestSol,bestZ)
-
-# 2796
