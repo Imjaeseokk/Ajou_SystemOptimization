@@ -1,7 +1,7 @@
 import random as rd
 
 
-n = 10
+n = 20
 
 KOSPIlevel = ["BR","ED","EU","BL"]
 ClsPerform = [[0.56,0.482,0.49,0.625],
@@ -57,10 +57,30 @@ def calZ(w,n,x):
         total += calHR(w,x)
     return total/n
 
+def checkClassifiers(x,realCls,w):
+    measuresML = []
+    measuresEX = []
+    measuresUS = []
+    for i in range(4):
+        measuresML.append(classifierML(x,i)*w[0][i])
+    for i in range(4):
+        measuresEX.append(classifierML(x,i)*w[1][i])
+    for i in range(4):
+        measuresUS.append(classifierML(x,i)*w[2][i])
+    if measuresML.index(max(measuresML)) == \
+        measuresML.index(max(measuresML)) == \
+        measuresML.index(max(measuresML)) == realCls:
+        return True
+    else:
+        return False
+
+
 def calHR(w,x):       # 가중치랑 실제 class 입력받기
     realCls = int(x//0.25)
-    if 0.9999*3 == (classifierML(x,realCls) + classifierEX(x,realCls) + classifierUS(x,realCls)):         # 모든 case 맞췄을 때
-        return 1        # 1 출력
+    # if 0.9999*3 == (classifierML(x,realCls) + classifierEX(x,realCls) + classifierUS(x,realCls)):         # 모든 case 맞췄을 때
+    #     return 1        # 1 출력
+    if checkClassifiers(x,realCls,w):
+        return 1
     else:
         Ej = calE(w,realCls,x)    # 실제 class에 대한 분류기들 측정 값
         Eall = 0
