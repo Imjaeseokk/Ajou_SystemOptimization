@@ -2,7 +2,6 @@ import random as rd
 import math
 n = 40
 
-
 PASSENGERS = 31433
 STATIONS = 118
 RUN = 201
@@ -44,9 +43,6 @@ print(timeforStn)
 print(arrvStn)          # 각 승객이 정류장에 도착한 시간
 print(sum(timeforStn))
 
-
-Xcost = []  # 교통 비용 최소화 운행 횟수 염색체: 이진 * 1092
-Xwait = []# 최적 대기 시간 배차 간격 염색체: 각 정류장에 도착하는 시간(기준은 03:58)
 
 def getPopulation(n):
     population = []
@@ -118,64 +114,116 @@ def mutation(genes):
     return genes
 
 # start
-repeated = 0
-notImproved = 0
+# repeated = 0
+# notImproved = 0
+#
+# population = getPopulation(n)
+# populationCosts = []
+# for p in population:
+#     cost = getRunCost(p)+getWaitCost(p,arrvStn)
+#     populationCosts.append([cost,p])
+# currentMinCost,bestSolution = sorted(populationCosts)[0]
+# bestZ = getZOptimRun(bestSolution,arrvStn,currentMinCost)
+#
+# while (repeated < minRepeatationOptim) or (notImproved < minNotImprovedOptim):
+#     print("repeated: ",repeated,"notImproved:", notImproved)
+#     repeated += 1
+#
+#     populationZ = []
+#     for p in population:
+#         z = getZOptimRun(p,arrvStn,currentMinCost)
+#         populationZ.append([z,p])
+#     populationZ = sorted(populationZ)
+#
+#
+#     waitCrossover = []
+#     for z,p in populationZ[1:]:
+#         rdCrossover = rd.random()
+#         if rdCrossover < rateofCrossover:
+#             waitCrossover.append(p)
+#         else:
+#             continue
+#
+#         if len(waitCrossover) == 2:
+#             o1,o2 = crossover(waitCrossover)
+#             population += mutation([o1,o2])
+#             waitCrossover = []
+#
+#     for p in population:
+#         z = getZOptimRun(p,arrvStn,currentMinCost)
+#         populationZ.append([z,p])
+#     populationZ = sorted(populationZ)
+#
+#     newPopulationZ = [populationZ[0]]
+#     selectIDX = 0
+#     while len(newPopulationZ) <= n:
+#         rdSelection = rd.random()
+#         if rdSelection < 0.8:
+#             newPopulationZ.append(populationZ[selectIDX])
+#         selectIDX = (selectIDX+1)%len(populationZ)
+#
+#     population = [p for z,p in newPopulationZ]
+#     if newPopulationZ[0][0] < bestZ:
+#         notImproved = 0
+#         bestZ,bestSolution = newPopulationZ[0]
+#         currentMinCost = getRunCost(bestSolution)+getWaitCost(bestSolution,arrvStn)
+#     else:
+#         notImproved += 1
+#
+#     print(len(population))
+#     print(len(populationZ))
+#
+# print(bestSolution)
+# print(sum(bestSolution))
+#
+# # 최적 운행 횟수 도출 완료
+# optRunCount = len(bestSolution)
+# optStnTimetable = []
+#
+#
+#
+# for i in range(len(bestSolution)):
+#     if bestSolution[i] == 1:
+#         optStnTimetable.append(i)
+#
+# print(optStnTimetable)
 
-population = getPopulation(n)
-populationCosts = []
-for p in population:
-    cost = getRunCost(p)+getWaitCost(p,arrvStn)
-    populationCosts.append([cost,p])
-currentMinCost,bestSolution = sorted(populationCosts)[0]
-bestZ = getZOptimRun(bestSolution,arrvStn,currentMinCost)
+print("최소 대기")
 
-while (repeated < minRepeatationOptim) or (notImproved < minNotImprovedOptim):
-    print("repeated: ",repeated,"notImproved:", notImproved)
-    repeated += 1
-
-    populationZ = []
-    for p in population:
-        z = getZOptimRun(p,arrvStn,currentMinCost)
-        populationZ.append([z,p])
-    populationZ = sorted(populationZ)
+optStnTimetable = [19, 25, 36, 43, 54, 59, 87, 91, 101, 107, 124, 132, 136, 140, 146, 151, 157, 175, 181, 187, 191, 193, 198, 202, 211, 215, 226, 232, 246, 250, 257, 261, 266, 273, 277, 284, 289, 302, 303, 316, 354, 370, 376, 394, 400, 404, 419, 435, 450, 451, 455, 459, 464, 468, 505, 507, 511, 516, 524, 527, 540, 563, 569, 576, 581, 586, 592, 617, 624, 629, 632, 638, 641, 645, 650, 656, 662, 669, 683, 691, 695, 699, 713, 717, 731, 758, 760, 765, 772, 776, 780, 787, 795, 799, 801, 803, 816, 830, 837, 841, 846, 851, 856, 863, 877, 895, 926, 1061, 1075]
 
 
-    waitCrossover = []
-    for z,p in populationZ[1:]:
-        rdCrossover = rd.random()
-        if rdCrossover < rateofCrossover:
-            waitCrossover.append(p)
-        else:
-            continue
+def getTimeTable(timetable):
+    stnTimeGap = [timetable[0]]
+    for i in range(1,len(timetable)):
+        stnTimeGap.append(timetable[i]-timetable[i-1])
+    return stnTimeGap
 
-        if len(waitCrossover) == 2:
-            o1,o2 = crossover(waitCrossover)
-            population += mutation([o1,o2])
-            waitCrossover = []
+def getWaitPopulation(n,timeGap):
+    population = []
+    for i in range(n):
+        stnSchedule = [0]
+        stnGap = timeGap[:]
+        for j in range(1,len(timeGap)+1):
+            rdIdx = rd.randint(0,len(stnGap)-1)
+            stnSchedule.append(stnSchedule[j-1]+stnGap.pop(rdIdx))
+        population.append(stnSchedule[1:])
 
-    for p in population:
-        z = getZOptimRun(p,arrvStn,currentMinCost)
-        populationZ.append([z,p])
-    populationZ = sorted(populationZ)
+stnTimeGap = getTimeTable(optStnTimetable)  # 최적 횟수 도출한 Schedule에서 각 도착 시간 간격 도출
+print("time",stnTimeGap)
+population = getWaitPopulation(n,stnTimeGap) # 각 도착 시간 간격 기반으로 초기 집단 생성
 
-    newPopulationZ = [populationZ[0]]
-    selectIDX = 0
-    while len(newPopulationZ) <= n:
-        rdSelection = rd.random()
-        if rdSelection < 0.8:
-            newPopulationZ.append(populationZ[selectIDX])
-        selectIDX = (selectIDX+1)%len(populationZ)
 
-    population = [p for z,p in newPopulationZ]
-    if newPopulationZ[0][0] < bestZ:
-        notImproved = 0
-        bestZ,bestSolution = newPopulationZ[0]
-        currentMinCost = getRunCost(bestSolution)+getWaitCost(bestSolution,arrvStn)
-    else:
-        notImproved += 1
 
-    print(len(population))
-    print(len(populationZ))
 
-print(bestSolution)
-print(sum(bestSolution))
+
+
+
+
+
+
+
+
+
+
+
